@@ -8,5 +8,5 @@ embedded system in the glove and produce an output in the form of words on LCD.
 
 
 
-https://user-images.githubusercontent.com/76535633/207848509-479bd9f0-5e11-42ef-b7eb-cc09521dcaa3.mp4
+                                 https://user-images.githubusercontent.com/76535633/207848509-479bd9f0-5e11-42ef-b7eb-cc09521dcaa3.mp4
 
