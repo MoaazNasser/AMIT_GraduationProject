@@ -17,11 +17,11 @@ int main(void)
 	while(1)
 	{
 		if ( ((Flex_Read(Flex0Pin) <= 680) && (Flex_Read(Flex0Pin) >= 635)) && ((Flex_Read(Flex1Pin) <= 780) && (Flex_Read(Flex1Pin) >= 740)) && ((Flex_Read(Flex2Pin) <= 725) && (Flex_Read(Flex2Pin) >= 690)) && ((Flex_Read(Flex3Pin) <= 740) && (Flex_Read(Flex3Pin) >= 710)) && ((Flex_Read(Flex4Pin) <= 790) && (Flex_Read(Flex4Pin) >= 765)))
-		{
+		{  // Ranges are put according to Flex sensors calibration
 			while( ((Flex_Read(Flex0Pin) <= 665) && (Flex_Read(Flex0Pin) >= 635)) && ((Flex_Read(Flex1Pin) <= 780) && (Flex_Read(Flex1Pin) >= 740)) && ((Flex_Read(Flex2Pin) <= 725) && (Flex_Read(Flex2Pin) >= 690)) && ((Flex_Read(Flex3Pin) <= 740) && (Flex_Read(Flex3Pin) >= 710)) && ((Flex_Read(Flex4Pin) <= 790) && (Flex_Read(Flex4Pin) >= 765)))
 			{
-				LCD_WriteStr("Al-Salam Alikom");
-				LCD_WriteComm(0x02);
+				LCD_WriteStr("Al-Salam Alikom"); // Changeable words
+				LCD_WriteComm(0x02);             // Return LCD Home
 			}
 			LCD_CLR();
 		}
@@ -31,7 +31,7 @@ int main(void)
 			while ( ((Flex_Read(Flex0Pin) <= 695) && (Flex_Read(Flex0Pin) >= 655)) && ((Flex_Read(Flex1Pin) <= 735) && (Flex_Read(Flex1Pin) >= 700)) && ((Flex_Read(Flex2Pin) <= 690) && (Flex_Read(Flex2Pin) >= 660)) && ((Flex_Read(Flex3Pin) <= 730) && (Flex_Read(Flex3Pin) >= 695)) && ((Flex_Read(Flex4Pin) <= 750) && (Flex_Read(Flex4Pin) >= 715)))
 			{
 				LCD_WriteStr("Eng.Eslam");
-				LCD_WriteComm(0x02);
+				LCD_WriteComm(0x02);       
 			}
 			LCD_CLR();
 		}
@@ -42,8 +42,8 @@ int main(void)
 			{
 				LCD_WriteStr("We are the");
 				LCD_WriteComm(0xC0);
-				LCD_WriteStr("Deaf-Glove team");
-				LCD_WriteComm(0x02);
+				LCD_WriteStr("Deaf-Glove team");  
+				LCD_WriteComm(0x02);              
 			}
 			LCD_CLR();
 		}

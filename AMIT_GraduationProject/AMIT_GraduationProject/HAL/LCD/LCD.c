@@ -24,8 +24,7 @@ void LCD_Init(void)
 }
 
 void LCD_WriteChar(uint8_t character)
-{
-	
+{	
 	DIO_SetPinVal(LCD_RS_PORT,LCD_RS_PIN,HIGH);
 	DIO_SetPinVal(LCD_RW_PORT,LCD_RW_PIN,LOW);
 
@@ -69,14 +68,6 @@ void LCD_WriteStr (const uint8_t *p)
 	}
 }
 
-void LCD_CLR(void)
-{
-	LCD_WriteComm(0x01);   // Clear
-	LCD_WriteComm(0x0C);   // Display ON, cursor OFF
-	LCD_WriteComm(0x02);   // Return Home
-	LCD_WriteComm(0x06);   // Write from left to right
-}
-
 void LCD_WriteNum(sint16_t NUM)
 {
 	if(NUM == 0)
@@ -106,4 +97,12 @@ void LCD_WriteNum(sint16_t NUM)
 			counter--;
 		}
 	}
+}
+
+void LCD_CLR(void)
+{
+	LCD_WriteComm(0x01);   // Clear
+	LCD_WriteComm(0x0C);   // Display ON, cursor OFF
+	LCD_WriteComm(0x02);   // Return Home
+	LCD_WriteComm(0x06);   // Write from left to right
 }

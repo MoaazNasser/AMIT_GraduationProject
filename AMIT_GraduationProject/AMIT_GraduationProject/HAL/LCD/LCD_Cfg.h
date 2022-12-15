@@ -3,9 +3,7 @@
 #ifndef LCD_CFG_H_
 #define LCD_CFG_H_
 
-#define LCD_MODE        _4_BIT_MODE
-
-#define LCD_DATA_REG    PORTB
+#define LCD_DATA_REG    PORTB      // Port B is used for LCD instead of Port A to allow using the ADC channels in Port A   
 
 #define LCD4_DATA_PORT  DIO_PORTB
 #define LCD4_DATA_PIN   Pin4

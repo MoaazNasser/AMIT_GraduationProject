@@ -11,23 +11,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   3 .debug_aranges 000000f0  00000000  00000000  00000ef3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00002d2c  00000000  00000000  00000fe3  2**0
+  4 .debug_info   00002d2d  00000000  00000000  00000fe3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000008ce  00000000  00000000  00003d0f  2**0
+  5 .debug_abbrev 000008d0  00000000  00000000  00003d10  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000ef2  00000000  00000000  000045dd  2**0
+  6 .debug_line   00000ef2  00000000  00000000  000045e0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000198  00000000  00000000  000054d0  2**2
+  7 .debug_frame  00000198  00000000  00000000  000054d4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    0000020a  00000000  00000000  00005668  2**0
+  8 .debug_str    0000020a  00000000  00000000  0000566c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    0000078a  00000000  00000000  00005872  2**0
+  9 .debug_loc    0000078a  00000000  00000000  00005876  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 000000a0  00000000  00000000  00005ffc  2**0
+ 10 .debug_ranges 000000a0  00000000  00000000  00006000  2**0
                   CONTENTS, READONLY, DEBUGGING
  11 .text         00000004  00000e6c  00000e6c  00000ec0  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 12 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000609c  2**2
+ 12 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000060a0  2**2
                   CONTENTS, READONLY, DEBUGGING
  13 .text.Flex_Init 00000034  00000dbc  00000dbc  00000e10  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
@@ -108,7 +108,7 @@ Disassembly of section .text.Flex_Init:
 #include "util/delay.h"
 #include "Flex.h"
 
-void    Flex_Init()
+void    Flex_Init(void)
 {
 	DIO_SetPinDir(Flex0Port, Flex0Pin, INPUT);
  dbc:	40 e0       	ldi	r20, 0x00	; 0
@@ -212,52 +212,38 @@ uint16t Flex_Read(uint8_t FlexPin)
 Disassembly of section .text.LCD_WriteChar:
 
 00000b8e <LCD_WriteChar>:
-	LCD_WriteComm(0x02);   // Return Home
-	LCD_WriteComm(0x06);   // Write from left to right
+		{
+			LCD_WriteChar(arr[counter] + 48);
+			counter--;
+		}
+	}
 }
-
-void LCD_WriteChar(uint8_t character)
-{
  b8e:	cf 93       	push	r28
  b90:	c8 2f       	mov	r28, r24
-	
-	DIO_SetPinVal(LCD_RS_PORT,LCD_RS_PIN,HIGH);
  b92:	42 e0       	ldi	r20, 0x02	; 2
  b94:	61 e0       	ldi	r22, 0x01	; 1
  b96:	81 e0       	ldi	r24, 0x01	; 1
  b98:	0e 94 5a 05 	call	0xab4	; 0xab4 <DIO_SetPinVal>
-	DIO_SetPinVal(LCD_RW_PORT,LCD_RW_PIN,LOW);
  b9c:	43 e0       	ldi	r20, 0x03	; 3
  b9e:	62 e0       	ldi	r22, 0x02	; 2
  ba0:	81 e0       	ldi	r24, 0x01	; 1
  ba2:	0e 94 5a 05 	call	0xab4	; 0xab4 <DIO_SetPinVal>
-
-	LCD_DATA_REG = ((character & 0xF0) | (LCD_DATA_REG & 0x0F));                               // (0101 0011 & 1111 0000)        (0100 1101 & 0000 1111)
  ba6:	88 b3       	in	r24, 0x18	; 24
  ba8:	9c 2f       	mov	r25, r28
  baa:	90 7f       	andi	r25, 0xF0	; 240
  bac:	8f 70       	andi	r24, 0x0F	; 15
  bae:	89 2b       	or	r24, r25
  bb0:	88 bb       	out	0x18, r24	; 24
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,HIGH);                                                //        0101 0000           |          0000 1101
  bb2:	42 e0       	ldi	r20, 0x02	; 2
  bb4:	63 e0       	ldi	r22, 0x03	; 3
  bb6:	81 e0       	ldi	r24, 0x01	; 1
  bb8:	0e 94 5a 05 	call	0xab4	; 0xab4 <DIO_SetPinVal>
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
-
-	__builtin_avr_delay_cycles(__ticks_dc);
  bbc:	8f e9       	ldi	r24, 0x9F	; 159
  bbe:	9f e0       	ldi	r25, 0x0F	; 15
  bc0:	01 97       	sbiw	r24, 0x01	; 1
  bc2:	f1 f7       	brne	.-4      	; 0xbc0 <LCD_WriteChar+0x32>
  bc4:	00 c0       	rjmp	.+0      	; 0xbc6 <LCD_WriteChar+0x38>
  bc6:	00 00       	nop
-	_delay_ms(1);
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,LOW);
  bc8:	43 e0       	ldi	r20, 0x03	; 3
  bca:	63 e0       	ldi	r22, 0x03	; 3
  bcc:	81 e0       	ldi	r24, 0x01	; 1
@@ -268,8 +254,6 @@ void LCD_WriteChar(uint8_t character)
  bd8:	f1 f7       	brne	.-4      	; 0xbd6 <LCD_WriteChar+0x48>
  bda:	00 c0       	rjmp	.+0      	; 0xbdc <LCD_WriteChar+0x4e>
  bdc:	00 00       	nop
-	_delay_ms(5);
-	LCD_DATA_REG = ((character << 4) | (LCD_DATA_REG & 0x0F));
  bde:	20 e1       	ldi	r18, 0x10	; 16
  be0:	c2 9f       	mul	r28, r18
  be2:	c0 01       	movw	r24, r0
@@ -278,7 +262,6 @@ void LCD_WriteChar(uint8_t character)
  be8:	9f 70       	andi	r25, 0x0F	; 15
  bea:	89 2b       	or	r24, r25
  bec:	88 bb       	out	0x18, r24	; 24
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,HIGH);
  bee:	42 e0       	ldi	r20, 0x02	; 2
  bf0:	63 e0       	ldi	r22, 0x03	; 3
  bf2:	81 e0       	ldi	r24, 0x01	; 1
@@ -289,8 +272,6 @@ void LCD_WriteChar(uint8_t character)
  bfe:	f1 f7       	brne	.-4      	; 0xbfc <LCD_WriteChar+0x6e>
  c00:	00 c0       	rjmp	.+0      	; 0xc02 <LCD_WriteChar+0x74>
  c02:	00 00       	nop
-	_delay_ms(1);
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,LOW);
  c04:	43 e0       	ldi	r20, 0x03	; 3
  c06:	63 e0       	ldi	r22, 0x03	; 3
  c08:	81 e0       	ldi	r24, 0x01	; 1
@@ -301,38 +282,28 @@ void LCD_WriteChar(uint8_t character)
  c14:	f1 f7       	brne	.-4      	; 0xc12 <LCD_WriteChar+0x84>
  c16:	00 c0       	rjmp	.+0      	; 0xc18 <LCD_WriteChar+0x8a>
  c18:	00 00       	nop
-	_delay_ms(5);
-}
  c1a:	cf 91       	pop	r28
  c1c:	08 95       	ret
 
 Disassembly of section .text.LCD_WriteComm:
 
 00000c1e <LCD_WriteComm>:
-
-void LCD_WriteComm(uint8_t comm)
-{
  c1e:	cf 93       	push	r28
  c20:	c8 2f       	mov	r28, r24
-	DIO_SetPinVal(LCD_RS_PORT,LCD_RS_PIN,LOW);
  c22:	43 e0       	ldi	r20, 0x03	; 3
  c24:	61 e0       	ldi	r22, 0x01	; 1
  c26:	81 e0       	ldi	r24, 0x01	; 1
  c28:	0e 94 5a 05 	call	0xab4	; 0xab4 <DIO_SetPinVal>
-	DIO_SetPinVal(LCD_RW_PORT,LCD_RW_PIN,LOW);
  c2c:	43 e0       	ldi	r20, 0x03	; 3
  c2e:	62 e0       	ldi	r22, 0x02	; 2
  c30:	81 e0       	ldi	r24, 0x01	; 1
  c32:	0e 94 5a 05 	call	0xab4	; 0xab4 <DIO_SetPinVal>
-
-	LCD_DATA_REG = ((comm & 0xF0) | (LCD_DATA_REG & 0x0F));
  c36:	88 b3       	in	r24, 0x18	; 24
  c38:	9c 2f       	mov	r25, r28
  c3a:	90 7f       	andi	r25, 0xF0	; 240
  c3c:	8f 70       	andi	r24, 0x0F	; 15
  c3e:	89 2b       	or	r24, r25
  c40:	88 bb       	out	0x18, r24	; 24
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,HIGH);
  c42:	42 e0       	ldi	r20, 0x02	; 2
  c44:	63 e0       	ldi	r22, 0x03	; 3
  c46:	81 e0       	ldi	r24, 0x01	; 1
@@ -343,8 +314,6 @@ void LCD_WriteComm(uint8_t comm)
  c52:	f1 f7       	brne	.-4      	; 0xc50 <LCD_WriteComm+0x32>
  c54:	00 c0       	rjmp	.+0      	; 0xc56 <LCD_WriteComm+0x38>
  c56:	00 00       	nop
-	_delay_ms(1);
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,LOW);
  c58:	43 e0       	ldi	r20, 0x03	; 3
  c5a:	63 e0       	ldi	r22, 0x03	; 3
  c5c:	81 e0       	ldi	r24, 0x01	; 1
@@ -355,8 +324,6 @@ void LCD_WriteComm(uint8_t comm)
  c68:	f1 f7       	brne	.-4      	; 0xc66 <LCD_WriteComm+0x48>
  c6a:	00 c0       	rjmp	.+0      	; 0xc6c <LCD_WriteComm+0x4e>
  c6c:	00 00       	nop
-	_delay_ms(5);
-	LCD_DATA_REG = ((comm << 4) | (LCD_DATA_REG & 0x0F));
  c6e:	20 e1       	ldi	r18, 0x10	; 16
  c70:	c2 9f       	mul	r28, r18
  c72:	c0 01       	movw	r24, r0
@@ -365,7 +332,6 @@ void LCD_WriteComm(uint8_t comm)
  c78:	9f 70       	andi	r25, 0x0F	; 15
  c7a:	89 2b       	or	r24, r25
  c7c:	88 bb       	out	0x18, r24	; 24
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,HIGH);
  c7e:	42 e0       	ldi	r20, 0x02	; 2
  c80:	63 e0       	ldi	r22, 0x03	; 3
  c82:	81 e0       	ldi	r24, 0x01	; 1
@@ -376,8 +342,6 @@ void LCD_WriteComm(uint8_t comm)
  c8e:	f1 f7       	brne	.-4      	; 0xc8c <LCD_WriteComm+0x6e>
  c90:	00 c0       	rjmp	.+0      	; 0xc92 <LCD_WriteComm+0x74>
  c92:	00 00       	nop
-	_delay_ms(1);
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,LOW);
  c94:	43 e0       	ldi	r20, 0x03	; 3
  c96:	63 e0       	ldi	r22, 0x03	; 3
  c98:	81 e0       	ldi	r24, 0x01	; 1
@@ -388,51 +352,36 @@ void LCD_WriteComm(uint8_t comm)
  ca4:	f1 f7       	brne	.-4      	; 0xca2 <LCD_WriteComm+0x84>
  ca6:	00 c0       	rjmp	.+0      	; 0xca8 <LCD_WriteComm+0x8a>
  ca8:	00 00       	nop
-	_delay_ms(5);
-}
  caa:	cf 91       	pop	r28
  cac:	08 95       	ret
 
 Disassembly of section .text.LCD_Init:
 
 00000cae <LCD_Init>:
-
-#include "LCD.h"
-
-void LCD_Init(void)
-{
-	DIO_SetPinDir(LCD_EN_PORT, LCD_EN_PIN, OUTPUT);
  cae:	41 e0       	ldi	r20, 0x01	; 1
  cb0:	63 e0       	ldi	r22, 0x03	; 3
  cb2:	81 e0       	ldi	r24, 0x01	; 1
  cb4:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-	DIO_SetPinDir(LCD_RW_PORT, LCD_RW_PIN, OUTPUT);
  cb8:	41 e0       	ldi	r20, 0x01	; 1
  cba:	62 e0       	ldi	r22, 0x02	; 2
  cbc:	81 e0       	ldi	r24, 0x01	; 1
  cbe:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-	DIO_SetPinDir(LCD_RS_PORT, LCD_RS_PIN, OUTPUT);
  cc2:	41 e0       	ldi	r20, 0x01	; 1
  cc4:	61 e0       	ldi	r22, 0x01	; 1
  cc6:	81 e0       	ldi	r24, 0x01	; 1
  cc8:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-		
-	DIO_SetPinDir(LCD4_DATA_PORT,LCD4_DATA_PIN,OUTPUT);
  ccc:	41 e0       	ldi	r20, 0x01	; 1
  cce:	64 e0       	ldi	r22, 0x04	; 4
  cd0:	81 e0       	ldi	r24, 0x01	; 1
  cd2:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-	DIO_SetPinDir(LCD5_DATA_PORT,LCD5_DATA_PIN,OUTPUT);
  cd6:	41 e0       	ldi	r20, 0x01	; 1
  cd8:	65 e0       	ldi	r22, 0x05	; 5
  cda:	81 e0       	ldi	r24, 0x01	; 1
  cdc:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-	DIO_SetPinDir(LCD6_DATA_PORT,LCD6_DATA_PIN,OUTPUT);
  ce0:	41 e0       	ldi	r20, 0x01	; 1
  ce2:	66 e0       	ldi	r22, 0x06	; 6
  ce4:	81 e0       	ldi	r24, 0x01	; 1
  ce6:	0e 94 ed 04 	call	0x9da	; 0x9da <DIO_SetPinDir>
-	DIO_SetPinDir(LCD7_DATA_PORT,LCD7_DATA_PIN,OUTPUT);
  cea:	41 e0       	ldi	r20, 0x01	; 1
  cec:	67 e0       	ldi	r22, 0x07	; 7
  cee:	81 e0       	ldi	r24, 0x01	; 1
@@ -446,28 +395,18 @@ void LCD_Init(void)
  d00:	e1 f7       	brne	.-8      	; 0xcfa <LCD_Init+0x4c>
  d02:	00 c0       	rjmp	.+0      	; 0xd04 <LCD_Init+0x56>
  d04:	00 00       	nop
-	
-	_delay_ms(1000);
-	
-	LCD_WriteComm(0x33);   // 4-bit mode
  d06:	83 e3       	ldi	r24, 0x33	; 51
  d08:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x32);   // 4-bit mode
  d0c:	82 e3       	ldi	r24, 0x32	; 50
  d0e:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x28);   // 4-bit mode
  d12:	88 e2       	ldi	r24, 0x28	; 40
  d14:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x0C);   // Display ON, cursor OFF
  d18:	8c e0       	ldi	r24, 0x0C	; 12
  d1a:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x01);   // Clear
  d1e:	81 e0       	ldi	r24, 0x01	; 1
  d20:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x02);   // Return Home
  d24:	82 e0       	ldi	r24, 0x02	; 2
  d26:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-	LCD_WriteComm(0x06);   // Write from left to right
  d2a:	86 e0       	ldi	r24, 0x06	; 6
  d2c:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
  d30:	08 95       	ret
@@ -475,34 +414,16 @@ void LCD_Init(void)
 Disassembly of section .text.LCD_WriteStr:
 
 00000d80 <LCD_WriteStr>:
-	DIO_SetPinVal(LCD_EN_PORT,LCD_EN_PIN,LOW);
-	_delay_ms(5);
-}
-
-void LCD_WriteStr (const uint8_t *p)
-{
  d80:	cf 92       	push	r12
  d82:	df 92       	push	r13
  d84:	ef 92       	push	r14
  d86:	cf 93       	push	r28
  d88:	6b 01       	movw	r12, r22
  d8a:	e8 2e       	mov	r14, r24
-	sint8_t counter = 0;
  d8c:	c0 e0       	ldi	r28, 0x00	; 0
-	
-	while(p[counter] != '\0' )
  d8e:	03 c0       	rjmp	.+6      	; 0xd96 <LCD_WriteStr+0x16>
-	{
-		LCD_WriteChar(p[counter]);
  d90:	0e 94 c7 05 	call	0xb8e	; 0xb8e <LCD_WriteChar>
-		counter ++;
  d94:	cf 5f       	subi	r28, 0xFF	; 255
-
-void LCD_WriteStr (const uint8_t *p)
-{
-	sint8_t counter = 0;
-	
-	while(p[counter] != '\0' )
  d96:	8c 2f       	mov	r24, r28
  d98:	0c 2e       	mov	r0, r28
  d9a:	00 0c       	add	r0, r0
@@ -517,11 +438,6 @@ void LCD_WriteStr (const uint8_t *p)
  dac:	80 81       	ld	r24, Z
  dae:	81 11       	cpse	r24, r1
  db0:	ef cf       	rjmp	.-34     	; 0xd90 <LCD_WriteStr+0x10>
-	{
-		LCD_WriteChar(p[counter]);
-		counter ++;
-	}
-}
  db2:	cf 91       	pop	r28
  db4:	ef 90       	pop	r14
  db6:	df 90       	pop	r13
@@ -626,22 +542,22 @@ int main(void)
  170:	92 40       	sbci	r25, 0x02	; 2
  172:	48 f4       	brcc	.+18     	; 0x186 <main+0xa8>
  174:	48 c0       	rjmp	.+144    	; 0x206 <main+0x128>
-		{
+		{  // Ranges are put according to Flex sensors calibration
 			while( ((Flex_Read(Flex0Pin) <= 665) && (Flex_Read(Flex0Pin) >= 635)) && ((Flex_Read(Flex1Pin) <= 780) && (Flex_Read(Flex1Pin) >= 740)) && ((Flex_Read(Flex2Pin) <= 725) && (Flex_Read(Flex2Pin) >= 690)) && ((Flex_Read(Flex3Pin) <= 740) && (Flex_Read(Flex3Pin) >= 710)) && ((Flex_Read(Flex4Pin) <= 790) && (Flex_Read(Flex4Pin) >= 765)))
 			{
-				LCD_WriteStr("Al-Salam Alikom");
+				LCD_WriteStr("Al-Salam Alikom"); // Changeable words
  176:	6c e6       	ldi	r22, 0x6C	; 108
  178:	70 e0       	ldi	r23, 0x00	; 0
  17a:	80 e0       	ldi	r24, 0x00	; 0
  17c:	0e 94 c0 06 	call	0xd80	; 0xd80 <LCD_WriteStr>
-				LCD_WriteComm(0x02);
+				LCD_WriteComm(0x02);             // Return LCD Home
  180:	82 e0       	ldi	r24, 0x02	; 2
  182:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
 
 	while(1)
 	{
 		if ( ((Flex_Read(Flex0Pin) <= 680) && (Flex_Read(Flex0Pin) >= 635)) && ((Flex_Read(Flex1Pin) <= 780) && (Flex_Read(Flex1Pin) >= 740)) && ((Flex_Read(Flex2Pin) <= 725) && (Flex_Read(Flex2Pin) >= 690)) && ((Flex_Read(Flex3Pin) <= 740) && (Flex_Read(Flex3Pin) >= 710)) && ((Flex_Read(Flex4Pin) <= 790) && (Flex_Read(Flex4Pin) >= 765)))
-		{
+		{  // Ranges are put according to Flex sensors calibration
 			while( ((Flex_Read(Flex0Pin) <= 665) && (Flex_Read(Flex0Pin) >= 635)) && ((Flex_Read(Flex1Pin) <= 780) && (Flex_Read(Flex1Pin) >= 740)) && ((Flex_Read(Flex2Pin) <= 725) && (Flex_Read(Flex2Pin) >= 690)) && ((Flex_Read(Flex3Pin) <= 740) && (Flex_Read(Flex3Pin) >= 710)) && ((Flex_Read(Flex4Pin) <= 790) && (Flex_Read(Flex4Pin) >= 765)))
  186:	80 e0       	ldi	r24, 0x00	; 0
  188:	0e 94 99 06 	call	0xd32	; 0xd32 <Flex_Read>
@@ -695,8 +611,8 @@ int main(void)
  1fc:	08 f0       	brcs	.+2      	; 0x200 <main+0x122>
  1fe:	bb cf       	rjmp	.-138    	; 0x176 <main+0x98>
 			{
-				LCD_WriteStr("Al-Salam Alikom");
-				LCD_WriteComm(0x02);
+				LCD_WriteStr("Al-Salam Alikom"); // Changeable words
+				LCD_WriteComm(0x02);             // Return LCD Home
 			}
 			LCD_CLR();
  200:	0e 94 29 07 	call	0xe52	; 0xe52 <LCD_CLR>
@@ -772,7 +688,7 @@ int main(void)
  294:	70 e0       	ldi	r23, 0x00	; 0
  296:	80 e0       	ldi	r24, 0x00	; 0
  298:	0e 94 c0 06 	call	0xd80	; 0xd80 <LCD_WriteStr>
-				LCD_WriteComm(0x02);
+				LCD_WriteComm(0x02);       
  29c:	82 e0       	ldi	r24, 0x02	; 2
  29e:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
 			LCD_CLR();
@@ -834,7 +750,7 @@ int main(void)
  31a:	bb cf       	rjmp	.-138    	; 0x292 <main+0x1b4>
 			{
 				LCD_WriteStr("Eng.Eslam");
-				LCD_WriteComm(0x02);
+				LCD_WriteComm(0x02);       
 			}
 			LCD_CLR();
  31c:	0e 94 29 07 	call	0xe52	; 0xe52 <LCD_CLR>
@@ -913,12 +829,12 @@ int main(void)
 				LCD_WriteComm(0xC0);
  3b8:	80 ec       	ldi	r24, 0xC0	; 192
  3ba:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
-				LCD_WriteStr("Deaf-Glove team");
+				LCD_WriteStr("Deaf-Glove team");  
  3be:	61 e9       	ldi	r22, 0x91	; 145
  3c0:	70 e0       	ldi	r23, 0x00	; 0
  3c2:	80 e0       	ldi	r24, 0x00	; 0
  3c4:	0e 94 c0 06 	call	0xd80	; 0xd80 <LCD_WriteStr>
-				LCD_WriteComm(0x02);
+				LCD_WriteComm(0x02);              
  3c8:	82 e0       	ldi	r24, 0x02	; 2
  3ca:	0e 94 0f 06 	call	0xc1e	; 0xc1e <LCD_WriteComm>
 			LCD_CLR();
@@ -980,8 +896,8 @@ int main(void)
  446:	b3 cf       	rjmp	.-154    	; 0x3ae <main+0x2d0>
 				LCD_WriteStr("We are the");
 				LCD_WriteComm(0xC0);
-				LCD_WriteStr("Deaf-Glove team");
-				LCD_WriteComm(0x02);
+				LCD_WriteStr("Deaf-Glove team");  
+				LCD_WriteComm(0x02);              
 			}
 			LCD_CLR();
  448:	0e 94 29 07 	call	0xe52	; 0xe52 <LCD_CLR>
@@ -1737,7 +1653,7 @@ Disassembly of section .text.ADC_Read:
 uint16t ADC_Read(uint8_t ADC_CHANNEL)
 {
 	//Channel select
-	CLR_BIT(DDRA,ADC_CHANNEL);
+	CLR_BIT(ADC_PORT,ADC_CHANNEL);
  e22:	9a b3       	in	r25, 0x1a	; 26
  e24:	21 e0       	ldi	r18, 0x01	; 1
  e26:	30 e0       	ldi	r19, 0x00	; 0

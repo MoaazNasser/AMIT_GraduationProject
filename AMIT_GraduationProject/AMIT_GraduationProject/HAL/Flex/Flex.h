@@ -7,7 +7,7 @@
 #include "DIO.h"
 #include "STD_TYPES.h"
 
-void    Flex_Init();
+void    Flex_Init(void);
 uint16t Flex_Read(uint8_t);
 
 #endif /* FLEX_H_ */

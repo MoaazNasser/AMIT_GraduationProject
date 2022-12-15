@@ -32,7 +32,7 @@ void ADC_Init()
 uint16t ADC_Read(uint8_t ADC_CHANNEL)
 {
 	//Channel select
-	CLR_BIT(DDRA,ADC_CHANNEL);
+	CLR_BIT(ADC_PORT,ADC_CHANNEL);
 	
 	ADMUX = ADC_CHANNEL | (ADMUX & 0xE0);
 	//Start of conversion

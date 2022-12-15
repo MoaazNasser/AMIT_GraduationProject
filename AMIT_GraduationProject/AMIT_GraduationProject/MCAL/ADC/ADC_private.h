@@ -40,14 +40,6 @@
 #define  ADPS1		1
 #define  ADPS0		0
 
-#define  ADCH       (*((volatile uint8_t *)0x25))
-#define  ADCL       (*((volatile uint8_t *)0x24))
 #define  ADC_REG  	(*((volatile uint16t *)0x24))
-
-#define  SFIOR      (*((volatile uint16t *)0x50))
-
-#define  ADTS2 7
-#define  ADTS1 6
-#define  ADTS0 5
 
 #endif /* ADC_PRIVATE_H_ */

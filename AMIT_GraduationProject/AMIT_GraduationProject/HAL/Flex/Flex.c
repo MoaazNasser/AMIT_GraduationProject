@@ -3,7 +3,7 @@
 #include "util/delay.h"
 #include "Flex.h"
 
-void    Flex_Init()
+void    Flex_Init(void)
 {
 	DIO_SetPinDir(Flex0Port, Flex0Pin, INPUT);
 	DIO_SetPinDir(Flex1Port, Flex1Pin, INPUT);

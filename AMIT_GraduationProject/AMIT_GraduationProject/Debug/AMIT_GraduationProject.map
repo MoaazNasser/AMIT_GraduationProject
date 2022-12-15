@@ -389,23 +389,23 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x2d2c
+.debug_info     0x0000000000000000     0x2d2d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x4e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/2.0.401/xc8/avr/lib/avr5/memx-const/crtatmega32a.o
- .debug_info    0x00000000000004e6      0x55c HAL/Flex/Flex.o
- .debug_info    0x0000000000000a42      0xaa2 HAL/LCD/LCD.o
- .debug_info    0x00000000000014e4     0x1155 main.o
- .debug_info    0x0000000000002639      0x2e5 MCAL/ADC/ADC.o
- .debug_info    0x000000000000291e      0x40e MCAL/DIO/DIO.o
+ .debug_info    0x00000000000004e6      0x55d HAL/Flex/Flex.o
+ .debug_info    0x0000000000000a43      0xaa2 HAL/LCD/LCD.o
+ .debug_info    0x00000000000014e5     0x1155 main.o
+ .debug_info    0x000000000000263a      0x2e5 MCAL/ADC/ADC.o
+ .debug_info    0x000000000000291f      0x40e MCAL/DIO/DIO.o
 
-.debug_abbrev   0x0000000000000000      0x8ce
+.debug_abbrev   0x0000000000000000      0x8d0
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x4a3 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/2.0.401/xc8/avr/lib/avr5/memx-const/crtatmega32a.o
- .debug_abbrev  0x00000000000004a3       0xeb HAL/Flex/Flex.o
- .debug_abbrev  0x000000000000058e      0x17f HAL/LCD/LCD.o
- .debug_abbrev  0x000000000000070d       0xa0 main.o
- .debug_abbrev  0x00000000000007ad       0x6f MCAL/ADC/ADC.o
- .debug_abbrev  0x000000000000081c       0xb2 MCAL/DIO/DIO.o
+ .debug_abbrev  0x00000000000004a3       0xed HAL/Flex/Flex.o
+ .debug_abbrev  0x0000000000000590      0x17f HAL/LCD/LCD.o
+ .debug_abbrev  0x000000000000070f       0xa0 main.o
+ .debug_abbrev  0x00000000000007af       0x6f MCAL/ADC/ADC.o
+ .debug_abbrev  0x000000000000081e       0xb2 MCAL/DIO/DIO.o
 
 .debug_line     0x0000000000000000      0xef2
  *(.debug_line .debug_line.* .debug_line_end)
